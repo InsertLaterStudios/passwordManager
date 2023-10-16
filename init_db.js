@@ -7,7 +7,7 @@
 const DATABASE = {
 	host: "localhost",
 	port: 5432,
-	user: "sammy",
+	user: "sammy", // REPLACE
 	database: "passwordManager",
 	password: process.env.DB_PASSWORD,
 }

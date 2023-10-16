@@ -1,6 +1,11 @@
 
 
 
+Be in console as sammy
+	If not, go to "1 README hosting.txt"
+
+
+
 1. NginX
 Execute all lines replacing:
 	example.com
@@ -11,7 +16,7 @@ sudo ufw app list
 sudo ufw allow 'Nginx HTTP'
 sudo ufw status
 systemctl status nginx
-sudo nano /etc/nginx/sites-available/example.com	# add the nginx code from below into file
+sudo nano /etc/nginx/sites-available/example.com	# copy the nginx code from below into file
 sudo nginx -t
 sudo systemctl restart nginx
 
@@ -58,9 +63,7 @@ sudo certbot renew --dry-run
 
 
 3. Node.js
-Execute all lines replacing:
-	sdadasd
-	asdadsdasdsad
+Execute all lines:
 
 sudo apt update
 sudo apt install nodejs
@@ -75,7 +78,8 @@ sudo npm install fs https pg bcrypt
 Execute all lines replacing:
 	your_database_password
 
-sudo node init_db.js DB_PASSWORD=your_database_password
+nano init_db.js		# modify 
+sudo node init_db.js DB_PASSWORD=your_database_password		#wait for 2 good logs to continue, possibly running again
 
 
 5. PM2
@@ -86,8 +90,7 @@ Execute all lines replacing:
 sudo npm install pm2@latest -g
 pm2 start server.js DB_PASSWORD=your_database_password
 
-#use this to copy a command that youll use
-pm2 startup systemd
+pm2 startup systemd		#use this command to copy a command to use
 EXAMPLE output
 	[PM2] Init System found: systemd
 	sammy

@@ -2,17 +2,13 @@
 	
 */
 
-
-
-
-
 const ADDRESS = "localhost"
 const PORT = 3000
 
 const DATABASE = {
 	host: "localhost",
 	port: 5432,
-	user: "sammy",
+	user: "sammy", // REPLACE
 	database: "passwordManager",
 	password: process.env.DB_PASSWORD,
 }
@@ -39,9 +35,9 @@ const bcrypt = require('bcrypt')
 
 
 
-const static_html = readFileSync("./static/index.html")
-const static_css = readFileSync("./static/index.css")
-const static_js = readFileSync("./static/index.js")
+const static_html = readFileSync("./templates/static/index.html")
+const static_css = readFileSync("./templates/static/index.css")
+const static_js = readFileSync("./templates/static/index.js")
 const sCs = {
 	e400: (res)=> res.writeHead(400, {"Content-Type": "html/text"}).end("<p>400: Bad Request</p>"),
 	e401: (res)=> res.writeHead(401, {"Content-Type": "html/text"}).end("<p>401: Unauthorized</p>"),
@@ -58,7 +54,7 @@ const sCs = {
 
 
 
-function pathOutServer(req, res, path, user_id) {
+function routeServer(req, res, path, user_id) {
 	if (req.method == "GET") {
 		
 	}
@@ -86,6 +82,7 @@ function pathOutServer(req, res, path, user_id) {
 	}
 	else return sCs.e405(res)
 }
+
 const server = createServer({
 	key: readFileSync("key.pem"),
 	cert: readFileSync("cert.pem")
@@ -94,11 +91,13 @@ const server = createServer({
 	const path = req.url.slice(1).split('/')
 	if(path.length > 2) return sCs.e414(res)
 	
+	// handle home
+	if (path[0] == '' && req.method[0] == 'G') return res.writeHead(200, {"Content-Type":"html/text"}).end(static_html)
+	
 	// handle static
-	if (path[0] == "static") {
-		if (path[1] == "index.html") return res.writeHead().end(static_html)
-		else if (path[1] == "index.css") return res.writeHead().end(static_css)
-		else if (path[1] == "index.js") return res.writeHead().end(static_js)
+	if (path[0] == "static") { // static/...
+		if (path[1][6] == 'c') return res.writeHead(200, {"Content-Type":"html/text"}).end(static_css)		// static/index.css
+		else if (path[1][6] == "j") return res.writeHead(200, {"Content-Type":"html/text"}).end(static_js)	// static/index.js
 		else return sCs.e404(res)
 	}
 	
@@ -111,7 +110,7 @@ const server = createServer({
 		
 		// get cookies
 		const local_cookies_1 = cookie.split('; ')
-		if(local_cookies_1.length != 2) return pathOutServer(req, res, path, false)
+		if(local_cookies_1.length != 2) return routeServer(req, res, path, false)
 		for (let i = 0; i < 2; i++) {
 			const local_cookies_2 = local_cookies_1[i].split('=')
 			
@@ -119,9 +118,9 @@ const server = createServer({
 				typeof(local_cookies_2[1]) == "string") cookies.id = local_cookies_2[1]
 			else if (local_cookies_2[0] == "t" &&
 				typeof(local_cookies_2[1]) == "string") cookies.t = local_cookies_2[1]
-			else return pathOutServer(req, res, path, false)
+			else return routeServer(req, res, path, false)
 		}
-		if (cookies.id == false || cookies.t == false) return pathOutServer(req, res, path, false)
+		if (cookies.id == false || cookies.t == false) return routeServer(req, res, path, false)
 		
 		// query cookie
 		pool.query("SELECT id, hash FROM users WHERE session_id = $1;",
@@ -138,12 +137,12 @@ const server = createServer({
 					return sCs.e500(res)
 				}
 				
-				if (cRes) pathOutServer(req, res, path, pRes.rows[0].id)
-				else pathOutServer(req, res, path, false)
+				if (cRes) routeServer(req, res, path, pRes.rows[0].id)
+				else routeServer(req, res, path, false)
 			})
 		})
 	}
-	else pathOutServer(req, res, path, false)
+	else routeServer(req, res, path, false)
 })
 server.listen(PORT, "localhost", () => {
     console.log(`server listening at https://${ADDRESS}:${PORT}`)
