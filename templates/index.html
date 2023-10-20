@@ -1,46 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-	<link rel="stylesheet" href="static/index.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-    <form id="signForm">
-        <input type="text" name="u" placeholder="Username" required>
-        <input type="password" name="p" placeholder="Password" required>
-        <button id="signBtn" type="submit">Sign In</button>
-    </form>
-	
-	<form id="addForm">
-        <input type="text" name="a" placeholder="Account Name" required>
-        <input type="password" name="pa" placeholder="Password" required>
-        <input type="text" name="u" placeholder="Username">
-        <input type="text" name="e" placeholder="Email">
-        <input type="text" name="ph" placeholder="Phone">
-        <input type="number" name="pi" placeholder="Pin">
-        <input type="text" name="st" placeholder="String">
-        <input type="text" name="q1" placeholder="Question 1">
-        <input type="text" name="a1" placeholder="Answer 1">
-        <input type="text" name="q2" placeholder="Question 2">
-        <input type="text" name="a2" placeholder="Answer 2">
-        <input type="text" name="q3" placeholder="Question 3">
-        <input type="text" name="a3" placeholder="Answer 3">
-        <button id="signBtn" type="submit">Sign In</button>
-	</form>
-	
-	<form id="searchForm">
-        <input type="text" name="a" placeholder="Account Name" required>
-        <input type="password" name="pa" placeholder="Password" required>
-        <input type="text" name="u" placeholder="Username">
-        <input type="text" name="e" placeholder="Email">
-        <input type="text" name="ph" placeholder="Phone">
-        <input type="number" name="pi" placeholder="Pin">
-        <button id="signBtn" type="submit">Sign In</button>
-	</form>
-
-    <script src="static/index.js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport"content="width=device-width, initial-scale=1.0">
+		<title>Sign In</title>
+		<link rel="stylesheet"href="static/index.css">
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	</head>
+	<body>
+		<div id="content">
+			<div id="tab1">
+				<form id="signForm">
+					<input type="text"name="u"placeholder="Username"required><br>
+					<input type="password"name="p"placeholder="Password"required><br>
+					<button id="signBtn"type="submit">Sign In</button><br>
+				</form>
+			</div>
+			<div id="tab2">
+				<div classs="tabs">
+					<button id="tab1Btn"type="button">Search</button>
+					<button id="tab2Btn"type="button">Add</button>
+				</div><br>
+				<div id="tab21">
+					<form id="searchForm">
+						<button id="search-clear"type="button">Clear</button><br>
+						<button id="searchName-clear"type="button">X</button>
+							<input id="searchName"type="text"name="a"placeholder="Account Name">
+								<label for="searchName">Account Name</label><br>
+						<button id="searchUser-clear"type="button">X</button>
+							<input id="searchUser"type="text"name="u"placeholder="Username">
+								<label for="searchUser">Username</label><br>
+						<button id="searchEmail-clear"type="button">X</button>
+							<input id="searchEmail"type="text"name="e"placeholder="Email">
+								<label for="searchEmail">Email</label><br>
+						<button id="searchPhone-clear"type="button">X</button>
+							<input id="searchPhone"type="text"name="ph"placeholder="Phone">
+								<label for="searchPhone">Phone</label><br>
+						<button id="searchPin-clear"type="button">X</button>
+							<input id="searchPin"type="number"name="pi"placeholder="Pin">
+								<label for="searchPin">Pin</label><br>
+						<button id="searchBtn"type="submit">Search</button>
+					</form><hr class="hr-head">
+					<button id="searchClear"type="button">Clear</button><hr>
+					<div id="results">
+						
+					</div>
+				</div>
+				<div id="tab22"><form id="addForm">
+					<button id="add-clear"type="button">Clear</button><br>
+					<input id="addName"type="text"name="a"placeholder="Account Name"required><br>
+					<input id="addPass"type="text"name="pa"placeholder="Password"required>
+						<button id="addPass-copy"type="button">Copy</button>
+						<button id="addPass-rand"type="button">Random</button>
+						<input id="addPass-rand-len"type="number"placeholder="Length"value="50"class="inputLen-pass"><label for="addPass-rand-len">Length</label><br>
+					<input id="addUser"type="text"name="u"placeholder="Username">
+						<button id="addUser-copy"type="button">Copy</button><br>
+					<input id="addEmail"type="text"name="e"placeholder="Email">
+						<button id="addEmail-copy"type="button">Copy</button><br>
+					<input id="addPhone"type="text"name="ph"placeholder="Phone">
+						<button id="addPhone-copy"type="button">Copy</button><br>
+					<input id="addPin"type="number"name="pi"placeholder="Pin">
+						<button id="addPin-rand"type="button">Random</button>
+						<input id="addPin-rand-len"type="number"placeholder="Length"value="6"class="inputLen-pin"><label for="addPass-rand-len">Length</label><br>
+					<input id="addString"type="text"name="st"placeholder="String">
+						<button id="addString-copy"type="button">Copy</button><br>
+					<input id="addQ1"type="text"name="q1"placeholder="Question 1">
+						<button type="button"id="addQ1-copy">Copy</button>
+						<button id="addQ1-rand"type="button">Random</button>
+					<input id="addA1"type="text"name="a1"placeholder="Answer 1">
+						<button type="button"id="addA1-copy">Copy</button>
+						<button id="addA1-rand"type="button">Random</button>
+						<input id="addQA-rand-len"type="number"placeholder="Length"value="15"class="inputLen-pin"><label for="addQA-rand-len">Length</label><br>
+					<input id="addQ2"type="text"name="q2"placeholder="Question 2">
+						<button type="button"id="addQ2-copy">Copy</button>
+						<button id="addQ2-rand"type="button">Random</button>
+					<input id="addA2"type="text"name="a2"placeholder="Answer 2">
+						<button type="button"id="addA2-copy">Copy</button>
+						<button id="addA2-rand"type="button">Random</button><br>
+					<input id="addQ3"type="text"name="q3"placeholder="Question 3">
+						<button type="button"id="addQ3-copy">Copy</button>
+						<button id="addQ3-rand"type="button">Random</button>
+					<input id="addA3"type="text"name="a3"placeholder="Answer 3">
+						<button type="button"id="addA3-copy">Copy</button>
+						<button id="addA3-rand"type="button">Random</button><br>
+					<button id="addBtn"type="submit">Add</button>
+				</form></div>
+				<div id="tab23"><form id="updateForm">
+					<input type="text"name="a"placeholder="Account Name"required><br>
+					<input type="password"name="pa"placeholder="Password"required><br>
+					<input type="text"name="u"placeholder="Username"><br>
+					<input type="text"name="e"placeholder="Email"><br>
+					<input type="text"name="ph"placeholder="Phone"><br>
+					<input type="number"name="pi"placeholder="Pin"><br>
+					<input type="text"name="st"placeholder="String"><br>
+					<input type="text"name="q1"placeholder="Question 1">
+					<input type="text"name="a1"placeholder="Answer 1"><br>
+					<input type="text"name="q2"placeholder="Question 2">
+					<input type="text"name="a2"placeholder="Answer 2"><br>
+					<input type="text"name="q3"placeholder="Question 3">
+					<input type="text"name="a3"placeholder="Answer 3"><br>
+					<button id="updateBtn"type="submit">Add</button>
+				</form></div>
+			</div>
+		</div>
+		<script src="static/index.js"></script>
+	</body>
 </html>

@@ -5,9 +5,9 @@
 
 
 const DATABASE = {
-	host: "localhost",
-	port: 5432,
-	user: "sammy", // REPLACE
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	user: process.env.DB_USER,
 	database: "passwordManager",
 	password: process.env.DB_PASSWORD,
 }
@@ -23,46 +23,76 @@ pool.on("error", (err)=>{
 
 
 
+/*
+id
+username
+hash
+session id
+session hash
+*/
 pool.query(`CREATE TABLE IF NOT EXISTS users (
-	id SERIAL PRIMARY KEY,
+	i SERIAL PRIMARY KEY,
 	
-	username VARCHAR(20) UNIQUE,
-	hash TEXT NOT NULL,
+	u VARCHAR(20) UNIQUE,
+	h TEXT NOT NULL,
 	
-	session_id TEXT UNIQUE,
-	session_hash TEXT DEFAULT NULL,
+	si TEXT UNIQUE,
+	sh TEXT DEFAULT NULL,
 	
-	created TIMESTAMP DEFAULT NOW()
+	c TIMESTAMP DEFAULT NOW()
 );`, (pErr1)=>{
 	if (pErr1) console.log(pErr1)
 	else {
 		console.log("users table CREATED")
+		/*
+		user id
+		
+		account
+		password
+		
+		username
+		email
+		phone
+		
+		pin
+		string
+		
+		question 1
+		answer 1
+		question 2
+		answer 2
+		question 3
+		answer 3
+		
+		created
+		*/
 		pool.query(`CREATE TABLE IF NOT EXISTS passwords (
-	user_id INT,
+	i SERIAL,
+	ui INT,
 	
-	account TEXT NOT NULL,
-	password TEXT NOT NULL,
+	a TEXT NOT NULL,
+	p TEXT NOT NULL,
 	
-	username TEXT DEFAULT NULL,
-	email TEXT DEFAULT NULL,
-	phone TEXT DEFAULT NULL,
+	u TEXT DEFAULT NULL,
+	e TEXT DEFAULT NULL,
+	ph TEXT DEFAULT NULL,
 	
-	pin INT DEFAULT NULL,
-	string TEXT DEFAULT NULL,
+	pi INT DEFAULT NULL,
+	s TEXT DEFAULT NULL,
 	
 	q1 TEXT DEFAULT NULL,
-	q1a TEXT DEFAULT NULL,
+	a1 TEXT DEFAULT NULL,
 	q2 TEXT DEFAULT NULL,
-	q2a TEXT DEFAULT NULL,
+	a2 TEXT DEFAULT NULL,
 	q3 TEXT DEFAULT NULL,
-	q3a TEXT DEFAULT NULL,
+	a3 TEXT DEFAULT NULL,
 	
-	created TIMESTAMP DEFAULT NOW(),
+	c TIMESTAMP DEFAULT NOW(),
 	
-	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-	CHECK ((q1 IS NULL) OR (q1a IS NOT NULL)),
-	CHECK ((q2 IS NULL) OR (q2a IS NOT NULL)),
-	CHECK ((q3 IS NULL) OR (q3a IS NOT NULL))
+	FOREIGN KEY (ui) REFERENCES users (i) ON DELETE CASCADE,
+	CHECK ((q1 IS NULL) OR (a1 IS NOT NULL)),
+	CHECK ((q2 IS NULL) OR (a2 IS NOT NULL)),
+	CHECK ((q3 IS NULL) OR (a3 IS NOT NULL))
 		);`, (pErr2)=>{
 			if (pErr2) console.log(pErr2)
 			else console.log("users table CREATED")
