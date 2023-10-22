@@ -33,19 +33,26 @@ const static_js = readFileSync("./templates/static/index.js")
 
 
 
+const bodyParams = {
+	// anonymous
+	sign: ['u', 'p'],
+	
+    search: ['a', 'u', 'e', 'ph', 'n'],
+	
+    add: ['a', 'p', 'u', 'e', 'ph', 'n', 's', 'q1', 'a1', 'q2', 'a2', 'q3', 'a3'],
+	add_required: ['a', 'p'],
+	add_loop: ['u', 'e', 'ph', 'n', 's', 'q1', 'a1', 'q2', 'a2', 'q3', 'a3'],
+	
+	update: ['i', 'a', 'p', 'u', 'e', 'ph', 'n', 's', 'q1', 'a1', 'q2', 'a2', 'q3', 'a3'],
+	
+    del: ['i'],
+}
 function routeClient(req, res, path, user_id) {
 	let body = ""
-	let valid = true
 	
-	const timer = setTimeout(()=>{
-		valid = false
-		req.abort()
-	}, 1000)
+	const timer = setTimeout(req.abort, 1000)
 	
-	req.on("error", (err)=>{
-		valid = false
-		web.e500(res)
-	})
+	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
 		if (body.length + chunk.length > 1024) sCs.e413(res)
 		else body += chunk.toString()
@@ -55,43 +62,96 @@ function routeClient(req, res, path, user_id) {
 		
 		if (req.method[0] == 'G') { // GET
 			if (path[0][0] == 's' && path[0][5] == 'h') { // search
-				const parsed = parseBody(body, ['a', 'u', 'e', 'h', 'i'], [])
-				let query = `SELECT * FROM passwords WHERE ui=$1;`
-				let params = [user_id]
-				pool.query(query, params, (pErr, pRes)=>{
-					if (pErr) sCs.e50a(res)
-					else res.writeHead(200, {}).end(JSON.stringify(pRes.rows))
-				})
+				const parsed = parseBody(body, bodyParams.search)
+				if (parsed) {
+					let query = `SELECT * FROM passwords WHERE ui=$1`
+					let params = [user_id]
+					
+					bodyParams.search.forEach((e)=>{
+						if (parsed[e]) {
+							params.push(parsed[e])
+							query += `, $[e}=$${params.length}`
+						}
+					})
+					query += ';'
+					
+					pool.query(query, params, (pErr, pRes)=>{
+						if (pErr) api.e500(res)
+						else res.writeHead(200, {}).end(JSON.stringify(pRes.rows))
+					})
+				}
+				else api.e400(res)
 			}
-			else sCs.e404(res)
+			else api.e404(res)
 		}
 		else if (req.method[1] == 'O') { // POST
 			if (path[0][0] == 'a' && path[0][2] == 'd') { // add
-				const parsed = parseBody(body, ['a', 'p', 'u', 'e', 'h', 'i', 's', 'q1', 'a1', 'q2', 'a2', 'q3', 'a3'], ['a', 'p'])
-				let query = `INSERT INTO passwords WHERE ui=$1 AND LOWER(a) LIKE %LOWER($1)%`
-				let params = []
-				pool.query(query, params, (err, res)=>{
-					
-				})
+				const parsed = parseBodyRequired(body, bodyParams.add, bodyParams.add_required)
+				if (parsed) {
+					if (Object.keys(parsed).length > 1) {
+						let query = `INSERT INTO passwords (a, p`
+						let queryExtension = `) VALUES ($1, $2`
+						let params = [parsed.a, parsed.p]
+						
+						bodyParams.add_loop.forEach((e)=>{
+							if (parsed[e]) {
+								query += `, ${e}`
+								params.push(parsed[e])
+								queryExtension += `, $${params.length}`
+							}
+						})
+						query += queryExtension + ");"
+						
+						pool.query(query, params, (err, res)=>{
+							if (pErr) api.e500(res)
+							else res.writeHead(200, {}).end("200")
+						})
+					}
+					else api.e404(res)
+				}
 			}
-			else sCs.e404(res)
+			else api.e404(res)
 		}
 		else if (req.method[1] == 'U') { // PUT
-			if (const parsed = parseBody(body, ['i', 'a', 'p', 'u', 'e', 'ph', 'n', 's', 'q1', 'a1', 'q2', 'a2', 'q3', 'a3'], ['i'])) {
-				let query = ""
-				let params = []
-				pool.query(query, params, (pErr, pRes)=>{
-					
-				})
+			if (path[0][0] == 'u' && path[0][5] == 'e') {
+				const parsed = parseBodyRequired(body, bodyParams.update, bodyParams.del)
+				if (parsed) {
+					if (Object.keys(parsed).length > 1) {
+						let query = `UPDATE passwords SET`
+						let params = []
+						
+						bodyParams.add.forEach((e)=>{
+							if (parsed[e]) {
+								params.push(parsed[e])
+								query += `, ${e}=$${params.length}`
+							}
+						})
+						params.push(parsed.i)
+						query += ` WHERE i=$${params.length} AND ui=$${params.length + 1};`
+						params.push(user_id)
+						
+						pool.query(query, params, (pErr, pRes)=>{
+							if (pErr) api.e500(res)
+							else res.writeHead(200, {}).end("200")
+						})
+					}
+					else api.e400(res)
+				}
+				else api.e400(res)
 			}
+			else api.e404(res)
 		}
 		else if (req.method[0] == 'D') { // DELETE
-			if (const parsed = parseBody(body, ['i'], ['i'])) pool.query(
-			"DELETE FROM passwords WHERE ui=$1 AND i=$2;", [user_id, parsed.i], (pErr, pRes)=>{
-				if (pErr) api.e500(res)
-				else res.writeHead(200, {}).end("200")
-			})
-			else api.e400(res)
+			if (path[0][0] == 'd' && path[0][5] == 'e') {
+				const parsed = parseBodyRequired(body, bodyParams.del, bodyParams.del)
+				if (parsed) pool.query(
+				"DELETE FROM passwords WHERE i=$1 AND ui=$2;", [parsed.i, user_id], (pErr, pRes)=>{
+					if (pErr) api.e500(res)
+					else res.writeHead(200, {}).end("200")
+				})
+				else api.e400(res)
+			}
+			else api.e404(res)
 		}
 		else api.e405(res)
 	})
@@ -100,15 +160,9 @@ function routeAnonymous(req, res, path) {
 	let body = ""
 	let valid = true
 	
-	const timer = setTimeout(()=>{
-		valid = false
-		req.abort()
-	}, 1000)
+	const timer = setTimeout(req.abort, 1000)
 	
-	req.on("error", (err)=>{
-		valid = false
-		web.e500(res)
-	})
+	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
 		if (body.length + chunk.length > 1024) sCs.e413(res)
 		else body += chunk.toString()
@@ -118,19 +172,20 @@ function routeAnonymous(req, res, path) {
 		
 		if (req.method[1] == 'O') { // POST
 			if (path[0][0] == 's') { // sign
-				if (const parsed = parseBodyRequired(body, ['u', 'p'], ['u', 'p'])) pool.query(
+				const parsed = parseBodyRequired(body, bodyParams.sign, bodyParams.sign)
+				if (parsed) pool.query(
 				"SELECT h FROM users WHERE u = $1;", [parsed.u], (pErr1, pRes1)=>{
 					if (pErr1) {
 						console.log("ERROR routeServer !user_id pool")
 						api.e500(res)
 					}
-					else compare(parsed.p, pRes1.rows[0].hash, (cErr, cRes)=> {
+					else if (pRes1.rows[0].hash) compare(parsed.p, pRes1.rows[0].hash, (cErr, cRes)=> {
 						if (cErr) {
 							console.log("ERROR routeServer !user_id pool compare")
 							api.e500(res)
 						}
 						else if (cRes) {
-							const id = randomString(20)
+							const id = randomString(25)
 							const t = randomString(50)
 							hash(t, (hErr, hRes)=>{
 								if (hErr) api.e500(res)
@@ -146,6 +201,7 @@ function routeAnonymous(req, res, path) {
 						}
 						else api.e401(res)
 					})
+					else api.e401(res)
 				})
 				else api.e400(res)
 			}
@@ -170,8 +226,9 @@ const server = createServer({
 		else web.e404(res)
 	}
 	// handle cookies
-	else if (req.headers.cookie && const cookies = parseCookies(req, api.e420, api.e421)){
-		pool.query("SELECT id, hash FROM users WHERE session_id = $1;", [ cookies.id ], (pErr, pRes)=>{
+	else if (req.headers.cookie){
+		const cookies = parseCookies(req, api.e420, api.e421)
+		if (cookies) pool.query("SELECT id, hash FROM users WHERE session_id = $1;", [ cookies.id ], (pErr, pRes)=>{
 			if (pErr) {
 				console.log("ERROR createServer token query")
 				api.e500(res)
@@ -186,6 +243,7 @@ const server = createServer({
 				else api.e421(res)
 			})
 		})
+		else api.e420(res)
 	}
 	else routeAnonymous(req, res, path)
 })
