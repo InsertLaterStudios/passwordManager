@@ -5,6 +5,7 @@ Be in console as sammy
 	If not, go to "1 README hosting.txt"
 
 Execute all lines replacing:
+	passwordManager
 	sammy
 	your_password
 
@@ -15,6 +16,7 @@ sudo systemctl enable postgresql
 sudo -i -u postgres
 psql
 CREATE DATABASE passwordManager;
-CREATE USER sammy WITH PASSWORD 'your_password';
+CREATE USER sammy WITH PASSWORD "your_password";
+\q
 exit
 

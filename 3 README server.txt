@@ -69,9 +69,15 @@ sudo apt update
 sudo apt install nodejs
 sudo node -v
 sudo apt install npm
+
+
+
+4.GitHub
+git clone https://github.com/InsertLaterStudios/passwordManager.git
+git clone https://github.com/InsertLaterStudios/aaJs.git
+cd passwordManager
 sudo npm init -y
 sudo npm install fs https pg bcrypt
-
 
 
 5. passwordManager

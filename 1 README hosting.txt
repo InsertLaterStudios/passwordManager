@@ -30,5 +30,5 @@ ufw allow OpenSSH
 ufw enable
 ufw status
 rsync --archive --chown=sammy:sammy ~/.ssh /home/sammy
-ssh sammy@your_server_ip
+su sammy
 
