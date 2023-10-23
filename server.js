@@ -27,7 +27,7 @@ const {
 
 
 // // RESPONSES // //
-const static_html = readFileSync("./templates/static/index.html")
+const static_html = readFileSync("./templates/index.html")
 const static_css = readFileSync("./templates/static/index.css")
 const static_js = readFileSync("./templates/static/index.js")
 
