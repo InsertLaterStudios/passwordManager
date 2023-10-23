@@ -82,12 +82,14 @@ sudo npm install fs https pg bcrypt
 
 5. passwordManager
 Execute all lines replacing:
+	3000
 	your_database_host
 	your_database_port
 	your_database_user
 	your_database_database
 	your_database_password
 
+export SERVER_HOST=3000
 export PG_HOST=your_database_host
 export PG_PORT=your_database_port
 export PG_USER=your_database_user
@@ -98,11 +100,10 @@ node init_db.js
 
 5. PM2
 Execute all lines replacing:
-	your_database_password
 	sammy
 
 sudo npm install pm2@latest -g
-pm2 start server.js DB_PASSWORD=your_database_password
+pm2 start server.js
 
 pm2 startup systemd		#use this command to copy a command to use
 EXAMPLE output

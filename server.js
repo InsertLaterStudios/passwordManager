@@ -12,7 +12,7 @@ const { web, api } = require("./aaJs/statusCodes.js")
 const {
 	randomString,
 	parseUrl,
-	parseBody, parseBodyRequired, } = require("../aaJs/authorizationHandler.js")
+	parseBody, parseBodyRequired, } = require("./aaJs/authorizationHandler.js")
 const { hash, compare } = require("./aaJs/hash/bcrypt.js")
 const {
 	pool,
