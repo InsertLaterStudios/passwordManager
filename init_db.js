@@ -15,7 +15,7 @@ const {
 
 
 function queryUsers() {
-	pool.query(`CREATE TABLE IF NOT EXISTS users (` +
+	const query = `CREATE TABLE IF NOT EXISTS users (` +
 `i SERIAL PRIMARY KEY,` + // id
 
 `u VARCHAR(20) UNIQUE,` + // username
@@ -24,13 +24,15 @@ function queryUsers() {
 `si TEXT UNIQUE,` + // session id
 `sh TEXT DEFAULT NULL,` + // session hash
 
-`c TIMESTAMP DEFAULT NOW());`, (pErr)=>{ // created
+`c TIMESTAMP DEFAULT NOW());`
+
+	pool.query(query, (pErr)=>{ // created
 		if (pErr) console.log(pErr)
 		else console.log("CREATED users table")
 	})
 }
 function queryPasswords() {
-	pool.query(`CREATE TABLE IF NOT EXISTS passwords (`
+	const query = `CREATE TABLE IF NOT EXISTS passwords (`
 `i SERIAL,` + // id
 `ui INT,` + // user id
 
@@ -56,7 +58,9 @@ function queryPasswords() {
 `FOREIGN KEY (ui) REFERENCES users (i) ON DELETE CASCADE,
 CHECK ((q1 IS NULL) OR (a1 IS NOT NULL)),
 CHECK ((q2 IS NULL) OR (a2 IS NOT NULL)),
-CHECK ((q3 IS NULL) OR (a3 IS NOT NULL)));`, (pErr)=>{
+CHECK ((q3 IS NULL) OR (a3 IS NOT NULL)));`
+
+	pool.query(query, (pErr)=>{
 		if (pErr) console.log(pErr)
 		else console.log("CREATED passwords table")
 	})
