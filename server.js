@@ -211,10 +211,7 @@ function routeAnonymous(req, res, path) {
 	})
 }
 
-const server = createServer({
-	key: readFileSync("key.pem"),
-	cert: readFileSync("cert.pem")
-}, (req, res)=>{
+const server = createServer((req, res)=>{
 	const path = parseUrl(req)
 	if(path.length > 2) sCs.e414(res)
 	// handle home
