@@ -82,10 +82,18 @@ sudo npm install fs https pg bcrypt
 
 5. passwordManager
 Execute all lines replacing:
+	your_database_host
+	your_database_port
+	your_database_user
+	your_database_database
 	your_database_password
 
-nano init_db.js		# modify 
-sudo node init_db.js DB_PASSWORD=your_database_password		#wait for 2 good logs to continue, possibly running again
+export DB_HOST="your_database_host"
+export DB_PORT=your_database_port
+export DB_USER="your_database_user"
+export B_DATABASE="your_database_database"
+export D DB_PASSWORD="your_database_password"
+node init_db.js
 
 
 5. PM2

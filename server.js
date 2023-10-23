@@ -4,7 +4,7 @@
 
 // // ENVIROMENT // //
 const SERVER_PORT = process.env.SERVER_PORT
-
+console.log("blah blah", process.env.PG_HOST)
 
 
 // // DEPENDENCIES // //
