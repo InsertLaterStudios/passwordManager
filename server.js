@@ -11,18 +11,18 @@ console.log("blah blah", process.env.PG_HOST)
 const { readFileSync } = require("fs")
 const { createServer } = require("http")
 
-const { web, api } = require("../aaJs/statusCodes.js")
+const { web, api } = require("./aaJs/statusCodes.js")
 const {
 	randomString,
 	parseUrl,
 	parseBody, parseBodyRequired, } = require("../aaJs/authorizationHandler.js")
-const { hash, compare } = require("../aaJs/hash/bcrypt.js")
+const { hash, compare } = require("./aaJs/hash/bcrypt.js")
 const {
 	pool,
 	
 	msqe,
 	muqe,
-	miqeN, miqeV, } = require("../aaJs/database/postgresql.js")
+	miqeN, miqeV, } = require("./aaJs/database/postgresql.js")
 
 
 
