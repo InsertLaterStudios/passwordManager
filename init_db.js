@@ -2,27 +2,20 @@
 	
 */
 
-const DATABASE = {
-	host: process.env.DB_HOST,
-	port: process.env.DB_PORT,
-	user: process.env.DB_USER,
-	database: process.env.DB_DATABASE,
-	password: process.env.DB_PASSWORD,
-}
+
+
+const {
+	pool,
+	
+	msqe,
+	muqe,
+	miqeN, miqeV
+} = require("../aaJs/database/postgresql.js")
 
 
 
-const { Pool } = require("pg")
-const pool = new Pool(DATABASE)
-pool.on("error", (err)=>{
-	console.log("pg Pool on(\"error")
-	process.exit()
-})
-
-
-
-
-function queryUsers(){pool.query(`CREATE TABLE IF NOT EXISTS users (` +
+function queryUsers() {
+	pool.query(`CREATE TABLE IF NOT EXISTS users (` +
 `i SERIAL PRIMARY KEY,` + // id
 
 `u VARCHAR(20) UNIQUE,` + // username
@@ -32,10 +25,12 @@ function queryUsers(){pool.query(`CREATE TABLE IF NOT EXISTS users (` +
 `sh TEXT DEFAULT NULL,` + // session hash
 
 `c TIMESTAMP DEFAULT NOW());`, (pErr)=>{ // created
-	if (pErr) console.log(pErr)
-	else console.log("CREATED users table")
-})}
-function queryPasswords(){pool.query(`CREATE TABLE IF NOT EXISTS passwords (`
+		if (pErr) console.log(pErr)
+		else console.log("CREATED users table")
+	})
+}
+function queryPasswords() {
+	pool.query(`CREATE TABLE IF NOT EXISTS passwords (`
 `i SERIAL,` + // id
 `ui INT,` + // user id
 
@@ -62,9 +57,10 @@ function queryPasswords(){pool.query(`CREATE TABLE IF NOT EXISTS passwords (`
 CHECK ((q1 IS NULL) OR (a1 IS NOT NULL)),
 CHECK ((q2 IS NULL) OR (a2 IS NOT NULL)),
 CHECK ((q3 IS NULL) OR (a3 IS NOT NULL)));`, (pErr)=>{
-	if (pErr) console.log(pErr)
-	else console.log("CREATED passwords table")
-})}
+		if (pErr) console.log(pErr)
+		else console.log("CREATED passwords table")
+	})
+}
 
 queryUsers()
 queryPasswords()
