@@ -241,7 +241,7 @@ const server = createServer((req, res)=>{
 	}
 	else routeAnonymous(req, res, path)
 })
-server.listen(SERVER_PORT, "localhost", () => {
-    console.log(`server at http://localhost:${SERVER_PORT}`)
+server.listen(process.env.SERVER_PORT, "localhost", () => {
+    console.log(`server at http://localhost:${process.env.SERVER_PORT}`)
 })
 
