@@ -88,11 +88,11 @@ Execute all lines replacing:
 	your_database_database
 	your_database_password
 
-export DB_HOST="your_database_host"
-export DB_PORT=your_database_port
-export DB_USER="your_database_user"
-export B_DATABASE="your_database_database"
-export D DB_PASSWORD="your_database_password"
+export PG_HOST=your_database_host
+export PG_PORT=your_database_port
+export PG_USER=your_database_user
+export PG_DATABASE=your_database_database
+export PG_PASSWORD=your_database_password
 node init_db.js
 
 
