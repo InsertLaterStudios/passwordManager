@@ -10,7 +10,7 @@ const {
 	msqe,
 	muqe,
 	miqeN, miqeV
-} = require("./aaJs/database/postgresql.js")
+} = require("../aaJs/database/postgresql.js")
 
 
 
