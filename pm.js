@@ -170,8 +170,8 @@ function routeAnonymous(req, res, path) {
 		if (req.method[1] == 'O') { // POST
 			if (path[0][0] == 's') { // sign
 				const parsed = parseBodyRequired(body, bodyParams.sign, bodyParams.sign)
-				if (parsed) pool.query(
-				"SELECT h FROM users WHERE u = $1;", [parsed.u], (pErr1, pRes1)=>{
+				console.log(parsed)
+				if (parsed) pool.query("SELECT h FROM users WHERE u = $1;", [parsed.u], (pErr1, pRes1)=>{
 					if (pErr1) {
 						console.log("ERROR routeServer !user_id pool")
 						api.e500(res)
@@ -210,13 +210,9 @@ function routeAnonymous(req, res, path) {
 
 const server = createServer((req, res)=>{
 	const path = parseUrl(req)
-	console.log(path)
-	if(path.length > 2) sCs.e414(res)
+	if(path.length > 2) web.e414(res)
 	// handle home
-	else if (path[0] == '' && req.method[0] == 'G') {
-		console.log(req.method)
-		res.writeHead(200, {"Content-Type":"text/html"}).end(static_html)
-	}
+	else if (path[0] == '' && req.method[0] == 'G') res.writeHead(200, {"Content-Type":"text/html"}).end(static_html)
 	// handle static
 	else if (path[0][0] == 's' && path[0][5] == 'c') { // 's'tati'c'/... || static/...
 		if (path[1][6] == 'c') res.writeHead(200, {"Content-Type":"html/text"}).end(static_css)		// static/index.css
