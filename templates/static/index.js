@@ -161,7 +161,7 @@ function addResultsToDiv(results){
 let adding=false;
 
 $(document).ready(()=>{
-	setTab(!signed);
+	setTab(signed);
 	setSubtab(0);
 	ajax_signIn_cookies();
 
