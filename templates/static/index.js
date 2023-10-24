@@ -56,7 +56,7 @@ function setSubtab(tab1){
 };
 
 // signing
-let signed=true; // SHOULD BE false
+let signed=false;
 let signing=false;
 function ajax_signIn_cookies(){
 	if(signed) setTab(false)
@@ -161,7 +161,7 @@ function addResultsToDiv(results){
 let adding=false;
 
 $(document).ready(()=>{
-	setTab(signed);
+	setTab(!signed);
 	setSubtab(0);
 	ajax_signIn_cookies();
 
