@@ -47,7 +47,7 @@ const bodyParams = {
 function routeClient(req, res, path, user_id) {
 	let body = ""
 	
-	const timer = setTimeout(req.abort, 1000)
+	const timer = setTimeout(()=>{ req.abort() }, 5000)
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
@@ -157,7 +157,7 @@ function routeAnonymous(req, res, path) {
 	let body = ""
 	let valid = true
 	
-	const timer = setTimeout(req.abort, 1000)
+	const timer = setTimeout(()=>{ req.abort() }, 5000)
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
