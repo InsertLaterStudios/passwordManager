@@ -210,9 +210,13 @@ function routeAnonymous(req, res, path) {
 
 const server = createServer((req, res)=>{
 	const path = parseUrl(req)
+	console.log(path)
 	if(path.length > 2) sCs.e414(res)
 	// handle home
-	else if (path[0] == '' && req.method[0] == 'G') res.writeHead(200, {"Content-Type":"html/text"}).end(static_html)
+	else if (path[0] == '' && req.method[0] == 'G') {
+		console.log(req.method)
+		res.writeHead(200, {"Content-Type":"html/text"}).end(static_html)
+	}
 	// handle static
 	else if (path[0][0] == 's' && path[0][5] == 'c') { // 's'tati'c'/... || static/...
 		if (path[1][6] == 'c') res.writeHead(200, {"Content-Type":"html/text"}).end(static_css)		// static/index.css

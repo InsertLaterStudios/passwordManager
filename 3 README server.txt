@@ -13,10 +13,12 @@ Execute all lines replacing:
 sudo apt update
 sudo apt install nginx
 sudo ufw app list
-sudo ufw allow 'Nginx HTTP'
+sudo ufw allow 'Nginx Full'
 sudo ufw status
 systemctl status nginx
 sudo nano /etc/nginx/sites-available/example.com	# copy the nginx code from below into file
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo nano /etc/nginx/nginx.conf
 sudo nginx -t
 sudo systemctl restart nginx
 
@@ -35,14 +37,24 @@ sudo systemctl enable nginx
 	example.crt
 	example.key
 
+
+limit_req_zonec$binary_remote_addr zone=mylimit:10m rate=1r/s;
+
 server {
-	listen 443 ssl;
+	listen 80;
+        listen [::]:80;
 	server_name example.com www.example.com;
 
-	proxy_pass localhost:3000;
-	
-	ssl_certificate /etc/nginx/ssl/example.crt;
-	ssl_certificate_key /etc/nginx/ssl/example.key;
+	location / {
+		limit_req zone=mylimit burst=2 nodelay;
+		
+		proxy_pass http://localhost:3000;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+	}
 }
 
 
@@ -74,31 +86,14 @@ sudo apt install npm
 
 4.GitHub
 git clone https://github.com/InsertLaterStudios/passwordManager.git
-git clone https://github.com/InsertLaterStudios/aaJs.git
 cd passwordManager
+git clone https://github.com/InsertLaterStudios/aaJs.git
 sudo npm init -y
 sudo npm install fs https pg bcrypt
 
 
-5. passwordManager
-Execute all lines replacing:
-	3000
-	your_database_host
-	your_database_port
-	your_database_user
-	your_database_database
-	your_database_password
 
-export SERVER_HOST=3000
-export PG_HOST=your_database_host
-export PG_PORT=your_database_port
-export PG_USER=your_database_user
-export PG_DATABASE=your_database_database
-export PG_PASSWORD=your_database_password
-node init_db.js
-
-
-5. PM2
+6. PM2
 Execute all lines replacing:
 	sammy
 
@@ -113,6 +108,7 @@ EXAMPLE output
 	sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u sammy --hp /home/sammy
 
 pm2 save
+sudo reboot # WAIT!!! this is a possible command if pm2 keeps shutting down
 sudo systemctl start pm2-sammy
 systemctl status pm2-sammy
 
@@ -125,3 +121,21 @@ pm2 stop app_name_or_id
 pm2 restart app_name_or_id
 pm2 info app_name
 
+
+
+5. passwordManager
+Execute all lines replacing:
+	3000
+	localhost
+	5432
+	sammy
+	passwordmanager
+	your_database_password
+
+export SERVER_PORT=3000
+export PG_HOST=localhost
+export PG_PORT=5432
+export PG_USER=sammy
+export PG_DATABASE=passwordmanager
+export PG_PASSWORD=your_database_password
+pm2 restart all --update-env
