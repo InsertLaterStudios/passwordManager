@@ -12,7 +12,7 @@ Create the digitalocean "droplet" equivelant of a cpu or process.
 		Datacenter (subsection of a regions server architecture, not really relevant)
 		OS Image (Ubuntu will be used in all examples)
 		Procesing Power / Number of CPUs for Price
-		SSH or Password (SSH more secure)
+		SSH or Password (SSH more secure), (i choose to disable OpenSSH and access through the website)
 		Optional Free or Paid add-ons
 
 
@@ -26,9 +26,8 @@ Execute all lines replacing:
 adduser sammy
 usermod -aG sudo sammy
 ufw app list
-ufw allow OpenSSH
+ufw delete OpenSSH
 ufw enable
 ufw status
-rsync --archive --chown=sammy:sammy ~/.ssh /home/sammy
 su sammy
 

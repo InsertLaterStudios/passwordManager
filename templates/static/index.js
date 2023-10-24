@@ -38,7 +38,7 @@ function setTab(tab1){
 	}
 };
 function setSubtab(tab1){
-	if(tab1==0){
+	switch(tab1==0){
 		document.getElementById("tab21").style.display="block";
 		document.getElementById("tab22").style.display="none";
 		document.getElementById("tab23").style.display="none";
@@ -58,28 +58,25 @@ function setSubtab(tab1){
 // signing
 let signed=false;
 let signing=false;
-function ajax_signIn_cookies(){
+function signIn_cookies(){
 	if(signed) setTab(false)
 	else if(!signing){
 		disable.sign(true);
 		signing=true;
-		$.ajax({type:"GET",url:"sign/",
-			success:res=>{
-				if(res.code==200){
-					signed=true;
-					setTab(1);
-					signing=false;
-					disable.sign(false);
-				}
-				else{
-					signing=false;
-					disable.sign(false);
-				}
-			},
-			error:err=>{
-				disable.sign(false);
+		fetch("#sign",{method:"POST",body:formData})
+		.then((fRes)=>{
+			if(fRes.status==200) {
+				signed=true;
+				setTab(false);
 				signing=false;
+				disable.sign(false);
 			}
+			else console.log(fRes);
+		})
+		.catch((fErr)=>{
+			signing=false;
+			disable.sign(false);
+			console.log("ERROR /sign");
 		});
 	}
 };
@@ -160,36 +157,34 @@ function addResultsToDiv(results){
 
 let adding=false;
 
-$(document).ready(()=>{
+window.onload()=>{
 	setTab(!signed);
 	setSubtab(0);
-	ajax_signIn_cookies();
+	signIn_cookies();
 
 	// signing
-	$("#signForm").submit(e=>{
+	document.getElementById("signForm").addEventListener("submit", (f)=>{
+		f.preventDefault();
 		if(signed) setTab(false);
-		else if(!signing){
-			e.preventDefault();
+		else{
 			disable.sign(true);
 			signing=true;
-			$.ajax({type:"POST",url:"sign/",data:$(this).serialize(),
-				success:res=>{
-					if(res.code==200){
-						signed=true;
-						setTab(false);
-						signing=false;
-						disable.sign(false);
-						$("#signForm")[0].reset();
-					}
-					else{
-						signing=false;
-						disable.sign(false);
-					}
-				},
-				error:err=>{
+			let formData = new FormData(f);
+			fetch("#sign",{method:"POST",body:formData})
+			.then((fRes)=>{
+				if(fRes.status==200) {
+					signed=true;
+					setTab(false);
 					signing=false;
 					disable.sign(false);
+					f.reset();
 				}
+				else console.log(fRes);
+			})
+			.catch((fErr)=>{
+				signing=false;
+				disable.sign(false);
+				console.log("ERROR /sign");
 			});
 		}
 	});
@@ -216,93 +211,28 @@ $(document).ready(()=>{
 
 	document.getElementById("searchClear").addEventListener("click",()=>{document.getElementById("results").innerHTML="";});
 
-	addResultsToDiv([{
-		i: 0,
-		a: "Steam",
-		p: "password",
-		
-		u: "Das Boot",
-		e: "dasboot@gmail.com",
-		ph: "1234567890",
-		
-		pi: "123456",
-		s: "turtle macro funtime happy attack",
-		
-		q1: "q1",
-		a1: "a1",
-		q2: "q2",
-		a2: "a2",
-		q3: "q3",
-		a3: "a3",
-		
-		c:"10/20/2023 15:48"
-	},{
-		i: 1,
-		a: "Apple",
-		p: "password",
-		
-		u: "Das Boot",
-		e: "dasboot@gmail.com",
-		ph: "1234567890",
-		
-		pi: "123456",
-		s: "turtle macro funtime happy attack",
-		
-		q1: "q1",
-		a1: "a1",
-		q2: "q2",
-		a2: "a2",
-		q3: "q3",
-		a3: "a3",
-		
-		c:"10/20/2023 15:48"
-	},{
-		i: 2,
-		a: "Rappers",
-		p: "password",
-		
-		u: "Das Boot",
-		e: "dasboot@gmail.com",
-		ph: "1234567890",
-		
-		pi: "123456",
-		s: "turtle macro funtime happy attack",
-		
-		q1: "q1",
-		a1: "a1",
-		q2: "q2",
-		a2: "a2",
-		q3: "q3",
-		a3: "a3",
-		
-		c:"10/20/2023 15:48"
-	}]);
-
-	$("#searchForm").submit(f=>{
+	document.getElementById("searchForm").addEventListener("submit", (f)=>{
+		f.preventDefault();
 		if(!searching){
 			searching=true;
 			f.preventDefault();
 			disable.search(true);
-			
-			let formDataArray=$(this).serializeArray();
-			formDataArray.filter(e=>{return e.value!=='';});
-			formDataArray=$.param(formDataArray);
-			
-			$.ajax({type:"POST",url:`search/${formDataArray}`,
-				success:(res)=>{
-					if(res.code==200){
-						searching=false;
-						disable.search(false);
-					}
-					else{
-						searching=false;
-						disable.search(false);
-					}
-				},
-				error:(err)=>{
+			let formData = f.serializeArray();
+			fetch(`#search/${formData}`,{method:"GET"})
+			.then((fRes)=>{
+				if(fRes.status==200) {
+					searching=false;
+					disable.search(false);
+					f.reset();
+				}
+				else {
 					searching=false;
 					disable.search(false);
 				}
+			})
+			.catch((fErr)=>{
+				searching=false;
+				disable.search(false);
 			});
 		}
 	});
@@ -349,33 +279,29 @@ $(document).ready(()=>{
 		document.getElementById("addA3").value=randomPassword(parseInt(document.getElementById("addQA-rand-len").value));
 	});
 
-	$("#addForm").submit(f=>{
-		if(!adding){
+	document.getElementById("addForm").addEventListener("submit", (f)=>{
+		if(!searching){
 			adding=true;
 			f.preventDefault();
 			disable.add(true);
-			
-			let formDataArray=$(this).serializeArray();
-			formDataArray.filter(e=>{return e.value!=='';});
-			formDataArray=$.param(formDataArray);
-			
-			$.ajax({type:"GET",url:"add/",data:formDataArray,
-				success:(res)=>{
-					if(res.code==200){
-						adding=false;
-						disable.add(false);
-						$("#addForm")[0].reset();
-					}
-					else{
-						adding=false;
-						disable.add(false);
-					}
-				},
-				error:(err)=>{
+			let formData = f.serializeArray();
+			formData.filter(e=>{return e.value!=='';});
+			fetch(`#add`,{method:"GET",body:formData})
+			.then((fRes)=>{
+				if(fRes.status==200) {
+					adding=false;
+					disable.add(false);
+					f.reset();
+				}
+				else {
 					adding=false;
 					disable.add(false);
 				}
+			})
+			.catch((fErr)=>{
+				adding=false;
+				disable.add(false);
 			});
 		}
 	});
-});
+};

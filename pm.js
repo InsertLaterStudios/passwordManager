@@ -4,6 +4,10 @@
 
 
 
+if (!process.env.SERVER_PORT) console.log("ERROR pm.js process.env.SERVER_PORT")
+
+
+
 // // DEPENDENCIES // //
 const { readFileSync } = require("fs")
 const { createServer } = require("http")
@@ -51,7 +55,7 @@ function routeClient(req, res, path, user_id) {
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
-		if (body.length + chunk.length > 1024) sCs.e413(res)
+		if (body.length + chunk.length > 1024) web.e413(res)
 		else body += chunk.toString()
 	})
 	req.on("end", ()=>{
@@ -161,7 +165,7 @@ function routeAnonymous(req, res, path) {
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
-		if (body.length + chunk.length > 1024) sCs.e413(res)
+		if (body.length + chunk.length > 1024) web.e413(res)
 		else body += chunk.toString()
 	})
 	req.on("end", ()=>{

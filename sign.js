@@ -25,7 +25,7 @@ hash(process.env.PASS, (hErr, hRes)=>{
 		console.log("ERROR hashing")
 		console.log(hErr)
 	}
-	else pool.query(`INSERT INTO users (u, h) VALUES ($1, $2);`, [process.env.USER, hRes], (pErr, pRes)=>{
+	else pool.query(`INSERT INTO users(u, h) VALUES($1, $2);`, [process.env.USER, hRes], (pErr)=>{
 		if (pErr) {
 			console.log("ERROR pooling")
 			console.log(pErr)

@@ -5,7 +5,7 @@ Be in console as sammy
 	If not, go to "1 README hosting.txt"
 
 Execute all lines replacing:
-	passwordManager
+	airanon
 	sammy
 	your_password
 
@@ -15,9 +15,11 @@ systemctl status postgresql
 sudo systemctl enable postgresql
 sudo -i -u postgres
 psql
-CREATE DATABASE passwordManager;
+CREATE DATABASE airanon;
 CREATE USER sammy WITH PASSWORD 'your_password';
-
+\q
+psql -d airanon
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO sammy;
 CREATE TABLE IF NOT EXISTS users (
 	i SERIAL PRIMARY KEY,
 
@@ -28,7 +30,6 @@ CREATE TABLE IF NOT EXISTS users (
 	sh TEXT DEFAULT NULL,
 
 	c TIMESTAMP DEFAULT NOW());
-
 CREATE TABLE IF NOT EXISTS passwords (
 	i SERIAL,
 	ui INT,
@@ -56,7 +57,8 @@ CREATE TABLE IF NOT EXISTS passwords (
 	CHECK ((q1 IS NULL) OR (a1 IS NOT NULL)),
 	CHECK ((q2 IS NULL) OR (a2 IS NOT NULL)),
 	CHECK ((q3 IS NULL) OR (a3 IS NOT NULL)));
-
+GRANT SELECT, INSERT, UPDATE, DELETE ON users TO sammy;
+GRANT SELECT, INSERT, UPDATE, DELETE ON passwords TO sammy;
 \q
 exit
 
