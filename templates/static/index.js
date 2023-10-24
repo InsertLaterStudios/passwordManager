@@ -36,6 +36,7 @@ function setTab(tab1){
 		document.getElementById("tab1").style.display="none";
 		document.getElementById("tab2").style.display="block";
 	}
+	else alert("ERROR setTab(${tab1})");
 };
 function setSubtab(tab1){
 	if(tab1==0){
@@ -53,6 +54,7 @@ function setSubtab(tab1){
 		document.getElementById("tab22").style.display="none";
 		document.getElementById("tab23").style.display="block";
 	}
+	else alert("ERROR setSubtab(${tab1})");
 };
 
 // signing
@@ -63,8 +65,7 @@ function signIn_cookies(){
 	else if(!signing){
 		disable.sign(true);
 		signing=true;
-		let formData = f.serializeArray();
-		fetch("#sign",{method:"POST",body:formData})
+		fetch("/sign",{method:"GET"})
 		.then((fRes)=>{
 			if(fRes.status==200) {
 				signed=true;
@@ -72,12 +73,16 @@ function signIn_cookies(){
 				signing=false;
 				disable.sign(false);
 			}
-			else console.log(fRes);
+			else{
+				signing=false;
+				disable.sign(false);
+				alert(`${fRes.status}: GET sign/`);
+			}
 		})
 		.catch((fErr)=>{
 			signing=false;
 			disable.sign(false);
-			console.log("ERROR /sign");
+			alert(`ERROR sign/`);
 		});
 	}
 };
@@ -86,7 +91,6 @@ function signIn_cookies(){
 let searching=false;
 
 const noneResult="";
-function makeResult(i){return`<p>${i}</p>`;};
 function makeQaResult(e){
 	if (e.q1 || e.a1 || e.q2 || e.a2 || e.q3 || e.a3) {
 		return `<table border="1">
@@ -170,7 +174,7 @@ function load(){
 		else{
 			disable.sign(true);
 			signing=true;
-			let formData = new FormData(f);
+			let formData=new FormData(f);
 			fetch("#sign",{method:"POST",body:formData})
 			.then((fRes)=>{
 				if(fRes.status==200) {
