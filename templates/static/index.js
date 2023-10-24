@@ -36,7 +36,6 @@ function setTab(tab1){
 		document.getElementById("tab1").style.display="none";
 		document.getElementById("tab2").style.display="block";
 	}
-	else alert("ERROR setTab(${tab1})");
 };
 function setSubtab(tab1){
 	if(tab1==0){
