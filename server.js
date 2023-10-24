@@ -215,7 +215,7 @@ const server = createServer((req, res)=>{
 	// handle home
 	else if (path[0] == '' && req.method[0] == 'G') {
 		console.log(req.method)
-		res.writeHead(200, {"Content-Type":"html/text"}).end(static_html)
+		res.writeHead(200, {"Content-Type":"text/html"}).end(static_html)
 	}
 	// handle static
 	else if (path[0][0] == 's' && path[0][5] == 'c') { // 's'tati'c'/... || static/...
