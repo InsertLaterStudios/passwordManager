@@ -157,7 +157,7 @@ function addResultsToDiv(results){
 
 let adding=false;
 
-window.onload(()=>{
+function load(){
 	setTab(!signed);
 	setSubtab(0);
 	signIn_cookies();
@@ -304,4 +304,4 @@ window.onload(()=>{
 			});
 		}
 	});
-});
+};
