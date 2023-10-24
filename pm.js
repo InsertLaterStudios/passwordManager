@@ -169,6 +169,7 @@ function routeAnonymous(req, res, path) {
 		
 		if (req.method[1] == 'O') { // POST
 			if (path[0][0] == 's') { // sign
+				console.log(body)
 				const parsed = parseBodyRequired(body, bodyParams.sign, bodyParams.sign)
 				console.log(parsed)
 				if (parsed) pool.query("SELECT h FROM users WHERE u = $1;", [parsed.u], (pErr1, pRes1)=>{
