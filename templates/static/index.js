@@ -38,7 +38,7 @@ function setTab(tab1){
 	}
 };
 function setSubtab(tab1){
-	switch(tab1==0){
+	if(tab1==0){
 		document.getElementById("tab21").style.display="block";
 		document.getElementById("tab22").style.display="none";
 		document.getElementById("tab23").style.display="none";
