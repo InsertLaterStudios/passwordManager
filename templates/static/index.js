@@ -63,6 +63,7 @@ function signIn_cookies(){
 	else if(!signing){
 		disable.sign(true);
 		signing=true;
+		let formData = f.serializeArray();
 		fetch("#sign",{method:"POST",body:formData})
 		.then((fRes)=>{
 			if(fRes.status==200) {
