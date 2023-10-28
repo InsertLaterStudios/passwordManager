@@ -291,6 +291,7 @@ const server = createServer((req, res)=>{
 	// handle cookies
 	else if (req.headers.cookie){
 		const cookies = parseCookies(req, api.e420, api.e421)
+		console.log(cookies)
 		if (cookies) pool.query("SELECT id, hash FROM users WHERE session_id = $1;", [ cookies.id ], (pErr, pRes)=>{
 			if (pErr) {
 				console.log("ERROR createServer token query")
@@ -305,6 +306,7 @@ const server = createServer((req, res)=>{
 				else if (cRes) routeClient(req, res, path, pRes.rows[0].id)
 				else api.e421(res)
 			})
+			else api.e401(res)
 		})
 		else api.e420(res)
 	}
