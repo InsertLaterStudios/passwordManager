@@ -49,13 +49,15 @@ const bodyParams = {
     del: ['i'],
 }
 function routeClient(req, res, path, user_id) {
-	let body = ""
+	console.log(req.connection.remoteAddress, req.method, req.url)
+	if (req.method[0] == 'G') return res.writeHead(200, {}).end("200")
 	
+	let body = ""
 	const timer = setTimeout(()=>{ req.abort() }, 5000)
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
-		if (body.length + chunk.length > 1024) web.e413(res)
+		if (body.length + chunk.length > 1024) return web.e413(res)
 		else body += chunk.toString()
 	})
 	req.on("end", ()=>{
@@ -158,14 +160,14 @@ function routeClient(req, res, path, user_id) {
 	})
 }
 function routeAnonymous(req, res, path) {
-	let body = ""
-	let valid = true
+	if (req.method[0] == 'G') return api.e401(res)
 	
+	let body = ""
 	const timer = setTimeout(()=>{ req.abort() }, 5000)
 	
 	req.on("error", (err)=>{ web.e500(res) })
 	req.on("data", (chunk)=>{
-		if (body.length + chunk.length > 1024) web.e413(res)
+		if (body.length + chunk.length > 1024) return web.e413(res)
 		else body += chunk.toString()
 	})
 	req.on("end", ()=>{
@@ -215,7 +217,68 @@ function routeAnonymous(req, res, path) {
 
 const server = createServer((req, res)=>{
 	const path = parseUrl(req)
-	if(path.length > 2) web.e414(res)
+	if(path.length > 2) return web.e414(res)
+	
+	if (path[0] == "static") {
+		if (path[1][6] == 'c') res.writeHead(200, {"Content-Type":"html/text"}).end(static_css)		// static/index.css
+		else if (path[1][6] == 'j') res.writeHead(200, {"Content-Type":"html/text"}).end(static_js)	// static/index.js
+		else web.e404(res)
+	}
+	/*else {
+		const cookies = parseCookies(req, api.e420, api.e421)
+		if (cookies) pool.query("SELECT id, hash FROM users WHERE session_id = $1;", [ cookies.id ], (pErr, pRes)=>{
+			if (pErr) {
+				console.log("ERROR createServer token query")
+				api.e500(res)
+			}
+			else if (pRes.rows[0].hash)
+			compare(cookies.t, pRes.rows[0].hash, (cErr, cRes)=> {
+				if (cErr) {
+					console.log("ERROR createServer token query compare")
+					api.e500(res)
+				}
+				else if (cRes) routeClient(req, res, path, pRes.rows[0].id)
+				else api.e421(res)
+			})
+		})
+		else return api.e420(res)
+		
+		if (cookies) {
+			if (req.method[0] == 'G') { // GET
+				
+			}
+			else if (req.method[1] == 'O') { // POST
+				
+			}
+			else if (req.method[1] == 'U') { // PUT
+				
+			}
+			else if (req.method[0] == 'D') { // DELETE
+				
+			}
+			else web.e405(res)
+		}
+		else {
+			if (req.method[0] == 'G') { // GET
+				
+			}
+			else if (req.method[1] == 'O') { // POST
+				
+			}
+			else if (req.method[1] == 'U') { // PUT
+				
+			}
+			else if (req.method[0] == 'D') { // DELETE
+				
+			}
+			else web.e405(res)
+		}
+		
+	}*/
+	
+	
+	
+	
 	// handle home
 	else if (path[0] == '' && req.method[0] == 'G') res.writeHead(200, {"Content-Type":"text/html"}).end(static_html)
 	// handle static
