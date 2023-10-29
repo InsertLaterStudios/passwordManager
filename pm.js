@@ -218,9 +218,9 @@ function routeAnonymous(req, res, path) {
 const server = createServer((req, res)=>{
 	console.log(req.connection.remoteAddress, req.method, req.url)
 	const path = parseUrl(req)
-	if(path.length > 2) return web.e414(res)
+	if(path.length > 2) web.e414(res)
 	
-	if (path[0] == "static") {
+	else if (path[0] == "static") {
 		if (path[1][6] == 'c') res.writeHead(200, {"Content-Type":"html/text"}).end(static_css)		// static/index.css
 		else if (path[1][6] == 'j') res.writeHead(200, {"Content-Type":"html/text"}).end(static_js)	// static/index.js
 		else web.e404(res)

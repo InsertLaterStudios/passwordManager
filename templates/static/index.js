@@ -75,13 +75,13 @@ function signIn_cookies(){
 			else{
 				signing=false;
 				disable.sign(false);
-				alert(`${fRes.status}: GET sign/`);
+				console.log(`${fRes.status}: GET sign/`);
 			}
 		})
 		.catch((fErr)=>{
 			signing=false;
 			disable.sign(false);
-			alert(`ERROR sign/`);
+			alert(`ERROR GET sign/`);
 		});
 	}
 };
@@ -159,6 +159,40 @@ function addResultsToDiv(results){
 // adding
 
 
+// calling
+const audioElement=document.getElementById("audio");
+let mediaRecorder;
+let audioChunks=[];
+function sendMessage(blob) {
+	const reader=new FileReader();
+	reader.onload=()=>{
+		const dataUrl=reader.result;
+		const socket=new WebSocket('ws://localhost:3000');
+		socket.addEventListener('open',()=>{
+			socket.send(dataUrl);
+			socket.close();
+		});
+	}
+	reader.readAsDataURL(blob);
+}
+function startRecording() {
+	audioChunks=[];
+	navigator.mediaDevices.getUserMedia((audio:true))
+		.then((stream)=>{
+			mediaRecorder=new MediaRecorder(stream);
+			mediaRecorder.ondataavailable=(event)=>{audioChunks.push(event.data);};
+			mediaRecorder.onstop=()=>{
+				const audioBlob = new Blob(audioChunks);
+				const audioUrl = URL.createObjectURL(audioBlob);
+				audioElement.src = audioUrl;
+				sendMessage(audioBlob);
+			};
+			mediaRecorder.start();
+		})
+		.catch((err)=>{console.log("ERROR startRecording")});
+}
+function stopRecording(){mediaRecorder.stop();}
+
 let adding=false;
 
 function load(){
@@ -174,7 +208,7 @@ function load(){
 			disable.sign(true);
 			signing=true;
 			let formData=new FormData(f);
-			fetch("#sign",{method:"POST",body:formData})
+			fetch("/sign",{method:"POST",body:formData})
 			.then((fRes)=>{
 				if(fRes.status==200) {
 					signed=true;
@@ -222,7 +256,7 @@ function load(){
 			f.preventDefault();
 			disable.search(true);
 			let formData = f.serializeArray();
-			fetch(`#search/${formData}`,{method:"GET"})
+			fetch(`/search/${formData}`,{method:"GET"})
 			.then((fRes)=>{
 				if(fRes.status==200) {
 					searching=false;
@@ -290,7 +324,7 @@ function load(){
 			disable.add(true);
 			let formData = f.serializeArray();
 			formData.filter(e=>{return e.value!=='';});
-			fetch(`#add`,{method:"GET",body:formData})
+			fetch(`/add`,{method:"POST",body:formData})
 			.then((fRes)=>{
 				if(fRes.status==200) {
 					adding=false;
