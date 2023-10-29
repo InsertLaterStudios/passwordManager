@@ -252,11 +252,11 @@ function load(){
 	document.getElementById("searchForm").addEventListener("submit", (f)=>{
 		f.preventDefault();
 		if(!searching){
-			searching=true;
 			f.preventDefault();
+			searching=true;
 			disable.search(true);
-			let formData = f.serializeArray();
-			fetch(`/search/${formData}`,{method:"GET"})
+			let bodyData=new URLSearchParams(new FormData(document.getElementById("searchForm"))).toString();
+			fetch("/search",{method:"GET",body:bodyData})
 			.then((fRes)=>{
 				if(fRes.status==200) {
 					searching=false;

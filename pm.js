@@ -180,7 +180,7 @@ function routeAnonymous(req, res, path) {
 				console.log(parsed)
 				if (parsed) pool.query("SELECT h FROM users WHERE u = $1;", [parsed.u], (pErr1, pRes1)=>{
 					if (pErr1) {
-						console.log("ERROR routeServer !user_id pool")
+						console.log("ERROR routeServer !user_id pool", pErr1)
 						api.e500(res)
 					}
 					else if (pRes1.rows[0].hash) compare(parsed.p, pRes1.rows[0].hash, (cErr, cRes)=> {
