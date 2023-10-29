@@ -207,7 +207,7 @@ function load(){
 		else{
 			disable.sign(true);
 			signing=true;
-			let formData=new FormData(f);
+			let formData=new FormData(document.getElementById("signForm"));
 			fetch("/sign",{method:"POST",body:formData})
 			.then((fRes)=>{
 				if(fRes.status==200) {
