@@ -177,7 +177,7 @@ function sendMessage(blob) {
 }
 function startRecording() {
 	audioChunks=[];
-	navigator.mediaDevices.getUserMedia({audio:true});
+	navigator.mediaDevices.getUserMedia({audio:true})
 		.then((stream)=>{
 			mediaRecorder=new MediaRecorder(stream);
 			mediaRecorder.ondataavailable=(event)=>{audioChunks.push(event.data);};
